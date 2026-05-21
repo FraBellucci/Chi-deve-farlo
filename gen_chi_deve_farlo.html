@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G2 – Chi deve farlo?</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1b5e20,#2e7d32,#388e3c);min-height:100vh;overflow:hidden;display:flex;justify-content:center;align-items:center}
+.container{background:#fff;width:800px;height:550px;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.header{background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:7px 13px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#1b5e20}.btn-white:hover{background:#e8f5e9}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.hidden{display:none!important}
+
+.instr{padding:18px 24px;overflow-y:auto;flex:1}
+.instr h2{color:#1b5e20;font-size:16px;margin-bottom:10px}
+.instr p,.instr li{font-size:13px;line-height:1.6;color:#444;margin-bottom:5px}
+.instr ul{margin-left:18px;margin-bottom:10px}
+.roles-row{display:flex;gap:8px;margin:10px 0}
+.role-badge{flex:1;border-radius:7px;padding:8px 10px;font-size:11px;font-weight:700;text-align:center;line-height:1.4}
+.rb-prep{background:#fff3e0;border:2px solid #ef6c00;color:#bf360c}
+.rb-spp{background:#e3f2fd;border:2px solid #1565c0;color:#0d47a1}
+.rb-mc{background:#f3e5f5;border:2px solid #7b1fa2;color:#4a0072}
+.rb-rls{background:#e8f5e9;border:2px solid #2e7d32;color:#1b5e20}
+.start-btn{background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:11px 32px;font-size:14px;border-radius:8px;display:block;margin:14px auto 0}
+.start-btn:hover{transform:translateY(-2px)}
+
+.game-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px 16px;gap:9px}
+.phase-hdr{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.phase-badge{background:#2e7d32;color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700}
+.phase-title{font-size:13px;font-weight:700;color:#1b5e20}
+.score-r{margin-left:auto;font-size:12px;color:#666}
+
+.scenario-box{background:#f1f8e9;border-left:4px solid #2e7d32;border-radius:8px;padding:11px 14px;font-size:13px;color:#333;line-height:1.6;flex-shrink:0}
+.question{font-size:13px;font-weight:700;color:#1b5e20;flex-shrink:0}
+.opts{display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.opt{padding:10px 14px;border:2px solid #c8e6c9;border-radius:8px;cursor:pointer;background:#fff;font-size:12px;color:#333;text-align:left;transition:all .2s;line-height:1.4;display:flex;align-items:center;gap:10px}
+.opt:hover:not(.disabled){border-color:#2e7d32;background:#e8f5e9;transform:translateX(4px)}
+.opt .opt-icon{font-size:20px;flex-shrink:0}
+.opt.correct{background:#e8f5e9;border-color:#1b5e20;color:#1b5e20;font-weight:600}
+.opt.wrong{background:#ffebee;border-color:#c62828;color:#7f0000}
+.opt.reveal{background:#e8f5e9;border-color:#1b5e20;color:#1b5e20}
+.opt.disabled{cursor:not-allowed}
+.fb-inline{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:8px;padding:11px 13px;font-size:12px;line-height:1.6;color:#0d47a1;display:none;flex-shrink:0}
+.fb-inline.show{display:block;animation:si .3s ease}
+@keyframes si{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.next-btn{align-self:center;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:9px 22px;font-size:13px;border-radius:7px;display:none;flex-shrink:0}
+.next-btn.show{display:block}
+
+.fb-page{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.fb-box{text-align:center;max-width:500px}
+.fb-icon{font-size:55px;margin-bottom:12px}
+.fb-box h2{font-size:22px;font-weight:700;color:#1b5e20;margin-bottom:8px}
+.fb-box p{font-size:13px;color:#555;line-height:1.6;margin-bottom:15px}
+.fb-score{background:#e8f5e9;border-radius:10px;padding:10px 20px;font-size:15px;font-weight:700;color:#2e7d32;margin-bottom:15px;display:inline-block}
+.fb-btns{display:flex;gap:10px;justify-content:center}
+.btn-prim{background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px}
+.btn-sec{background:#78909c;color:#fff;padding:10px 24px;font-size:13px;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>Chi deve farlo? – Ruoli e Responsabilità</h1>
+      <p>Corso Base Lavoratori · Moduli 4–7 – Preposto, SPP, Medico Competente, RLS</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">🔄 Ricomincia</button>
+      <button class="btn-white" onclick="window.close()">✕ Torna al Corso</button>
+    </div>
+  </div>
+  <div class="content">
+    <div id="instrPage" class="instr">
+      <h2>🎯 Obiettivo</h2>
+      <p>Ogni figura del sistema di sicurezza ha competenze specifiche. Leggi lo scenario e scegli <strong>chi deve intervenire</strong> tra le quattro figure chiave.</p>
+      <div class="roles-row">
+        <div class="role-badge rb-prep">🦺 Preposto<br><span style="font-weight:400">Sovraintende i lavoratori</span></div>
+        <div class="role-badge rb-spp">🔍 RSPP/SPP<br><span style="font-weight:400">Supporto tecnico al DL</span></div>
+        <div class="role-badge rb-mc">🩺 Medico Comp.<br><span style="font-weight:400">Salute e idoneità</span></div>
+        <div class="role-badge rb-rls">👥 RLS<br><span style="font-weight:400">Voce dei lavoratori</span></div>
+      </div>
+      <ul>
+        <li>Leggi attentamente lo scenario prima di rispondere</li>
+        <li>Le opzioni hanno tutte lo stesso formato — ragiona sul contenuto</li>
+        <li>6 scenari su situazioni reali di cantiere, ufficio e industria</li>
+      </ul>
+      <button class="start-btn" onclick="startGame()">▶ Inizia gli Scenari</button>
+    </div>
+
+    <div id="gamePage" class="game-wrap hidden">
+      <div class="phase-hdr">
+        <span class="phase-badge" id="phBadge">Scenario 1/6</span>
+        <span class="phase-title" id="phTitle"></span>
+        <span class="score-r">Corrette: <b id="scoreNum">0</b>/6</span>
+      </div>
+      <div class="scenario-box" id="scenText"></div>
+      <div class="question" id="qText"></div>
+      <div class="opts" id="optsContainer"></div>
+      <div class="fb-inline" id="fbInline"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextScen()">Scenario Successivo →</button>
+    </div>
+
+    <div id="fbPage" class="fb-page hidden">
+      <div class="fb-box">
+        <div class="fb-icon">✅</div>
+        <h2>Scenari Completati!</h2>
+        <p>Conoscere chi fa cosa evita sovrapposizioni e responsabilità non coperte. Il Preposto è la figura più "vicina" al lavoratore, il RLS è la sua voce, il MC tutela la salute, l'SPP supporta il DL tecnicamente.</p>
+        <div class="fb-score" id="fbScore">–</div>
+        <div class="fb-btns">
+          <button class="btn-prim" onclick="resetGame()">🔄 Rigioca</button>
+          <button class="btn-sec" onclick="window.close()">Torna al Corso</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const SCENARIOS=[
+  {
+    title:"Lavoratore senza DPI",
+    text:"Durante il turno pomeridiano in officina, Mario viene osservato dal responsabile di reparto mentre utilizza la smerigliatrice senza occhiali protettivi. Il lavoratore sostiene di averli dimenticati in spogliatoio.",
+    q:"Chi ha l'obbligo immediato di intervenire e far interrompere l'attività pericolosa?",
+    correct:0,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il responsabile di reparto che ha osservato la situazione"},
+      {icon:"🔍",name:"RSPP",text:"Il Responsabile del Servizio di Prevenzione che redige le procedure"},
+      {icon:"🩺",name:"Medico Competente",text:"Il medico che valuta l'idoneità del lavoratore all'uso dei DPI"},
+      {icon:"👥",name:"RLS",text:"Il Rappresentante dei Lavoratori che segnala le criticità"}
+    ],
+    fb:"Il Preposto (Art. 19 D.Lgs. 81/08) ha l'obbligo di interrompere immediatamente l'attività pericolosa e non può delegare ad altri questa responsabilità in situazioni di pericolo diretto. Risponde penalmente per omessa vigilanza se non interviene."
+  },
+  {
+    title:"Visita medica periodica",
+    text:"Un operatore di magazzino è esposto a movimentazione manuale di carichi pesanti e rumore superiore agli 80 dB. Sono passati due anni dall'ultima visita medica. Il lavoratore lamenta dolori alla schiena.",
+    q:"A chi spetta organizzare e effettuare la visita medica periodica?",
+    correct:2,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il capo turno che coordina le attività del magazzino"},
+      {icon:"🔍",name:"RSPP",text:"Il responsabile sicurezza che aggiorna il DVR con i rischi MMC"},
+      {icon:"🩺",name:"Medico Competente",text:"Il professionista sanitario con nomina formale del DL"},
+      {icon:"👥",name:"RLS",text:"Il rappresentante che ha ricevuto la segnalazione del lavoratore"}
+    ],
+    fb:"La sorveglianza sanitaria è di esclusiva competenza del Medico Competente (Art. 41 D.Lgs. 81/08), che stabilisce la periodicità delle visite nel protocollo sanitario in base ai rischi. Il RLS può sollecitare l'attivazione ma non può eseguirla."
+  },
+  {
+    title:"Consultazione sul DVR aggiornato",
+    text:"Il datore di lavoro ha apportato modifiche significative al ciclo produttivo: è stato introdotto un nuovo macchinario con rischi di vibrazione mano-braccio. Il DVR è stato aggiornato di conseguenza.",
+    q:"Chi deve essere obbligatoriamente consultato prima dell'approvazione del DVR aggiornato?",
+    correct:3,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il responsabile di linea che conosce il macchinario"},
+      {icon:"🔍",name:"RSPP",text:"Il responsabile che ha materialmente redatto l'aggiornamento del DVR"},
+      {icon:"🩺",name:"Medico Competente",text:"Il medico che valuterà l'idoneità dei lavoratori esposti"},
+      {icon:"👥",name:"RLS",text:"Il rappresentante eletto dai lavoratori, titolare del diritto di consultazione"}
+    ],
+    fb:"Il RLS ha diritto di essere consultato preventivamente sul DVR e sui suoi aggiornamenti (Art. 50, comma 1, lett. b). Non si tratta di una facoltà del DL ma di un obbligo: la mancata consultazione è sanzionata. Il RLS può formulare proposte che devono risultare nel verbale."
+  },
+  {
+    title:"Identificazione di un nuovo rischio",
+    text:"In un ufficio open space, diversi dipendenti hanno segnalato affaticamento visivo e cefalee ricorrenti dopo l'installazione di nuove lampade LED a luce fredda. La situazione dura da tre settimane.",
+    q:"Chi è il soggetto tecnico incaricato di analizzare il rischio e proporre misure correttive al DL?",
+    correct:1,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il responsabile ufficio che coordina il team e raccoglie le segnalazioni"},
+      {icon:"🔍",name:"RSPP/SPP",text:"Il servizio tecnico di prevenzione con competenza nell'analisi dei rischi"},
+      {icon:"🩺",name:"Medico Competente",text:"Il medico che visita i lavoratori con sintomi oculari"},
+      {icon:"👥",name:"RLS",text:"Il rappresentante che ha formalizzato le segnalazioni dei colleghi"}
+    ],
+    fb:"L'SPP (Art. 33 D.Lgs. 81/08) ha il compito di individuare i fattori di rischio, elaborare le misure preventive e proporre i programmi di informazione. La segnalazione dell'RLS e la visita del MC sono elementi complementari ma la valutazione tecnica spetta all'SPP."
+  },
+  {
+    title:"Giudizio di non idoneità parziale",
+    text:"Il Medico Competente ha emesso un giudizio di idoneità con limitazioni per un magazziniere: non può sollevare carichi superiori a 10 kg. Il capo reparto non sa come gestire la situazione operativa.",
+    q:"Chi deve adattare l'organizzazione del lavoro al giudizio del MC?",
+    correct:0,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il capo reparto che organizza i turni e assegna le mansioni"},
+      {icon:"🔍",name:"RSPP",text:"Il responsabile sicurezza che aggiorna il DVR con la limitazione"},
+      {icon:"🩺",name:"Medico Competente",text:"Il medico che ha emesso il giudizio e può modificarlo"},
+      {icon:"👥",name:"RLS",text:"Il rappresentante che tutela il lavoratore da discriminazioni"}
+    ],
+    fb:"Il giudizio del MC è vincolante per il DL e per il Preposto (Art. 18, comma 1, lett. g). Il capo reparto deve adeguare le mansioni del lavoratore rispettando la limitazione, senza poterla ignorare né rimandare ad altri. L'inottemperanza configura inadempimento del DL."
+  },
+  {
+    title:"Formazione obbligatoria nuovi assunti",
+    text:"L'azienda ha assunto 4 nuovi operai per il reparto verniciatura, un ambiente con esposizione a solventi e obbligo di DPI respiratori di III categoria. Devono iniziare il lavoro tra una settimana.",
+    q:"Quale figura è responsabile di garantire che la formazione e l'addestramento avvengano PRIMA dell'inizio dell'attività?",
+    correct:1,
+    opts:[
+      {icon:"🦺",name:"Preposto",text:"Il capo reparto che affiancherà i nuovi assunti sul campo"},
+      {icon:"🔍",name:"RSPP/SPP",text:"Il servizio che pianifica e coordina i percorsi formativi obbligatori"},
+      {icon:"🩺",name:"Medico Competente",text:"Il medico che eseguirà la visita preventiva prima dell'assunzione"},
+      {icon:"👥",name:"RLS",text:"Il rappresentante che verifica che i lavoratori ricevano la formazione"}
+    ],
+    fb:"L'SPP (Art. 33, comma 1, lett. c) elabora le procedure di sicurezza e i programmi di formazione. La formazione per attività con DPI di III categoria deve avvenire prima dell'inizio e includere addestramento pratico. Il Preposto affianca ma la responsabilità organizzativa della formazione è del DL tramite l'SPP."
+  },
+];
+
+let cur=0, score=0;
+function startGame(){cur=0;score=0;document.getElementById('scoreNum').textContent='0';loadScen();showPage('gamePage');}
+function loadScen(){
+  if(cur>=SCENARIOS.length){endGame();return;}
+  const s=SCENARIOS[cur];
+  document.getElementById('phBadge').textContent='Scenario '+(cur+1)+'/'+SCENARIOS.length;
+  document.getElementById('phTitle').textContent=s.title;
+  document.getElementById('scenText').textContent=s.text;
+  document.getElementById('qText').textContent=s.q;
+  const cont=document.getElementById('optsContainer'); cont.innerHTML='';
+  const indexed=s.opts.map((o,i)=>({...o,correct:i===s.correct})).sort(()=>Math.random()-.5);
+  indexed.forEach(opt=>{
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML=`<span class="opt-icon">${opt.icon}</span><div><strong>${opt.name}</strong> – ${opt.text}</div>`;
+    b.onclick=()=>answer(opt.correct,b,cont,s.fb,indexed);
+    cont.appendChild(b);
+  });
+  document.getElementById('fbInline').className='fb-inline';
+  document.getElementById('fbInline').innerHTML='';
+  document.getElementById('nextBtn').className='next-btn';
+}
+function answer(correct,btn,cont,fb,indexed){
+  [...cont.querySelectorAll('.opt')].forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)[...cont.querySelectorAll('.opt')].forEach(b=>{const o=indexed.find(x=>b.innerHTML.includes(x.name)&&x.correct);if(o)b.classList.add('reveal');});
+  if(correct){score++;document.getElementById('scoreNum').textContent=score;}
+  const box=document.getElementById('fbInline');
+  box.innerHTML='<b>'+(correct?'Risposta corretta.':'Risposta non corretta.')+'</b> '+fb;
+  box.classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+function nextScen(){cur++;loadScen();}
+function endGame(){document.getElementById('fbScore').textContent='Corrette: '+score+'/'+SCENARIOS.length;showPage('fbPage');}
+function resetGame(){showPage('instrPage');}
+function showPage(id){['instrPage','gamePage','fbPage'].forEach(p=>document.getElementById(p).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+</script>
+</body>
+</html>
